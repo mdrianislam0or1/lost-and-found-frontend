@@ -1,8 +1,16 @@
 "use client";
+
+import Error from "@/components/UI/StyleComponent/Error";
+import Loading from "@/components/UI/StyleComponent/Loading";
 import {
-  useGetFoundItemCategoriesQuery,
   useSubmitFoundItemMutation,
+  useGetFoundItemCategoriesQuery,
+  useGetAllFoundItemQuery,
+  useDeleteFoundItemMutation,
 } from "@/redux/api/foundItemApi";
+import { uploadImage } from "@/utils/uploadImages";
+import Link from "next/link";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 type FormValues = {
@@ -15,7 +23,7 @@ type FormValues = {
     phone: string;
     email: string;
   };
-  images: string;
+  images: FileList;
 };
 
 export default function SubmitFoundItem() {
@@ -28,16 +36,26 @@ export default function SubmitFoundItem() {
     error: categoriesError,
   } = useGetFoundItemCategoriesQuery({});
 
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const imagesArray = data.images.split(",").map((url) => url.trim());
+    const uploadedImageUrls = await Promise.all(
+      Array.from(data.images).map((file) => uploadImage(file))
+    );
+
     const formattedData = {
       ...data,
-      images: imagesArray,
+      images: uploadedImageUrls,
+      contactInfo: {
+        phone: data.contactInfo.phone,
+        email: data.contactInfo.email,
+      },
     };
 
     try {
       await submitFoundItem(formattedData).unwrap();
       reset();
+      setImageUrls([]);
       alert("Found item reported successfully!");
     } catch (err) {
       console.error(err);
@@ -45,9 +63,33 @@ export default function SubmitFoundItem() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div>
+        {" "}
+        <Loading />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div>
+        <Error />
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Submit Found Item</h2>
+    <div className="container mx-auto p-4">
+      <h2 className="text-2xl font-bold mb-4 text-center">Submit Found Item</h2>
+      <div className="text-center mt-6">
+        <Link href="/dashboard/admin/foundItem/allFoundItem">
+          <button className="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg shadow hover:bg-indigo-700 transition duration-300">
+            Found-Item
+          </button>
+        </Link>
+      </div>
       {categoriesLoading ? (
         <div>Loading categories...</div>
       ) : categoriesError ? (
@@ -128,17 +170,19 @@ export default function SubmitFoundItem() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Images (comma separated URLs)
+              Images
             </label>
             <input
+              type="file"
               {...register("images")}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
+              accept="image/*"
+              multiple
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4"
+            className="w-full bg-black text-white font-bold py-2 px-4 rounded mt-4"
             disabled={isLoading}
           >
             {isLoading ? "Submitting..." : "Submit Found Item"}

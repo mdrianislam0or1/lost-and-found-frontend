@@ -1,21 +1,34 @@
 "use client";
-import { useState } from "react";
-import SideBar from "./SideBar";
-
+import { useEffect, useState } from "react";
+import { getUserInfo } from "@/services/auth.service";
+import { useGetMyProfileQuery } from "@/redux/api/profileApi";
+import Image from "next/image";
+import Loading from "../StyleComponent/Loading";
+import dynamic from "next/dynamic";
 export default function DashBoardDesign({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null);
 
+  useEffect(() => {
+    const userInfo = getUserInfo();
+    setUserRole(userInfo);
+  }, []);
+
+  const { data, error, isLoading } = useGetMyProfileQuery({});
+
+  const profile = data || null;
+
+  const SideBar = dynamic(() => import("./SideBar"), { ssr: false });
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
       <aside
         className={`transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 w-64 bg-gray-200 p-4 transition-transform duration-200 ease-in-out fixed lg:static inset-y-0 left-0 z-30`}
+        } lg:translate-x-0 w-64 bg-purple-100 p-4 transition-transform duration-200 ease-in-out fixed lg:static inset-y-0 left-0 z-30`}
       >
         <SideBar />
       </aside>
@@ -42,46 +55,31 @@ export default function DashBoardDesign({
             </svg>
           </button>
           <h2 className="text-xl font-bold">Good Morning...</h2>
-          <div className="w-10 h-10 bg-black text-white flex items-center justify-center rounded-full">
-            A
+          <div className="w-10 h-10 bg-black text-white flex items-center justify-center rounded-full overflow-hidden">
+            {profile && profile.profile?.profilePicture ? (
+              <Image
+                width={40}
+                height={40}
+                src={profile.profile.profilePicture}
+                alt="Profile Picture"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-sm">
+                {isLoading ? "Loading..." : "No Image"}
+              </div>
+            )}
           </div>
         </header>
 
-        {/* <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-gray-300 p-4 rounded-lg">Total lost claim</div>
-          <div className="bg-gray-300 p-4 rounded-lg">Total lost found</div>
-          <div className="bg-gray-300 p-4 rounded-lg">Unsolved lost</div>
-          <div className="bg-gray-300 p-4 rounded-lg">Pending lost</div>
-        </section> */}
-
         <section>
-          {children}
-          {/* <div className="overflow-x-auto">
-            <table className="min-w-full bg-white rounded-lg">
-              <thead>
-                <tr className="w-full bg-gray-200 text-gray-700">
-                  <th className="p-2">Serial</th>
-                  <th className="p-2">Lost Item</th>
-                  <th className="p-2">Lost Date</th>
-                  <th className="p-2">Time lost</th>
-                  <th className="p-2">Status</th>
-                  <th className="p-2">View</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[...Array(5)].map((_, index) => (
-                  <tr key={index} className="text-center border-b">
-                    <td className="p-2">---</td>
-                    <td className="p-2">---</td>
-                    <td className="p-2">---</td>
-                    <td className="p-2">---</td>
-                    <td className="p-2">---</td>
-                    <td className="p-2">---</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div> */}
+          {isLoading ? (
+            <Loading />
+          ) : error ? (
+            <div>Error loading profile data</div>
+          ) : (
+            children
+          )}
         </section>
       </main>
     </div>

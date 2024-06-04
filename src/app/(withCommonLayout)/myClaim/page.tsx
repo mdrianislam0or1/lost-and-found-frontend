@@ -1,4 +1,6 @@
 "use client";
+import Error from "@/components/UI/StyleComponent/Error";
+import Loading from "@/components/UI/StyleComponent/Loading";
 import { useGetMyClaimQuery } from "@/redux/api/claimApi";
 import Image from "next/image";
 import { FC } from "react";
@@ -6,8 +8,18 @@ import { FC } from "react";
 const MyClaim: FC = () => {
   const { data, error, isLoading } = useGetMyClaimQuery({});
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: </div>;
+  if (isLoading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  if (error)
+    return (
+      <div>
+        <Error />
+      </div>
+    );
 
   const claims = data || [];
 

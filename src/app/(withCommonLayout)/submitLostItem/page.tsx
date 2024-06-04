@@ -1,11 +1,12 @@
 "use client";
-
-import React from "react";
+import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import axios from "axios";
 import {
   useSubmitLostItemMutation,
   useGetLostItemCategoriesQuery,
 } from "@/redux/api/lostItemApi";
+import Loading from "@/components/UI/StyleComponent/Loading";
 
 type FormValues = {
   categoryId: string;
@@ -17,12 +18,12 @@ type FormValues = {
     phone: string;
     email: string;
   };
-  images: string;
+  images: FileList;
 };
 
 export default function SubmitLostItem() {
   const { register, handleSubmit, reset } = useForm<FormValues>();
-  const [submitLostItem, { isLoading, isError, isSuccess, error }] =
+  const [submitLostItem, { isLoading, isError, isSuccess }] =
     useSubmitLostItemMutation();
   const {
     data: categoriesData,
@@ -30,26 +31,55 @@ export default function SubmitLostItem() {
     isLoading: categoriesLoading,
   } = useGetLostItemCategoriesQuery({});
 
+  const [uploading, setUploading] = useState(false);
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    const imagesArray = data.images.split(",").map((url) => url.trim());
+    setUploading(true);
+    const imageUrls = [];
+
+    for (let i = 0; i < data.images.length; i++) {
+      const file = data.images[i];
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const response = await axios.post(
+          `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API}`,
+          formData
+        );
+        imageUrls.push(response.data.data.url);
+      } catch (err) {
+        console.error("Failed to upload image:", err);
+        alert("Failed to upload image.");
+        setUploading(false);
+        return;
+      }
+    }
+
     const formattedData = {
       ...data,
-      images: imagesArray,
+      images: imageUrls,
     };
 
     try {
-      const result = await submitLostItem(formattedData).unwrap();
-      console.log("API Response:", result);
+      await submitLostItem(formattedData).unwrap();
       reset();
       alert("Lost item reported successfully!");
     } catch (err) {
-      console.error("Submission error:", err);
+      console.error(err);
       alert("Failed to report lost item.");
+    } finally {
+      setUploading(false);
     }
   };
 
   if (categoriesLoading) {
-    return <div>Loading categories...</div>;
+    return (
+      <div>
+        {" "}
+        <Loading />
+      </div>
+    );
   }
 
   if (categoriesError) {
@@ -57,7 +87,7 @@ export default function SubmitLostItem() {
   }
 
   return (
-    <div className="max-w-xl mx-auto p-4">
+    <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Submit Lost Item</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
@@ -102,7 +132,6 @@ export default function SubmitLostItem() {
             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
           />
         </div>
-
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Contact Phone
@@ -124,20 +153,21 @@ export default function SubmitLostItem() {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Images (comma separated URLs)
+            Images (Upload Files)
           </label>
           <input
+            type="file"
             {...register("images")}
             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-            placeholder="http://example.com/image1.jpg, http://example.com/image2.jpg"
+            multiple
           />
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4"
-          disabled={isLoading}
+          className="w-full bg-black text-white font-bold py-2 px-4 rounded mt-4"
+          disabled={isLoading || uploading}
         >
-          {isLoading ? "Submitting..." : "Submit Lost Item"}
+          {isLoading || uploading ? "Submitting..." : "Submit Lost Item"}
         </button>
         {isError && (
           <p className="text-red-500 mt-2">Error: Failed to submit the item</p>

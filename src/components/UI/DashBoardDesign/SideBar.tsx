@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import SideBarItem from "./SideBarItem";
 import { getUserInfo } from "@/services/auth.service";
+import Image from "next/image";
 
 export default function SideBar() {
   const [userRole, setUserRole] = useState("");
@@ -13,10 +14,18 @@ export default function SideBar() {
     setUserRole(role);
   }, []);
   return (
-    <div>
-      <div className="mb-8">
+    <div className=" ">
+      <div className=" mb-8">
         <h1 className="text-2xl font-bold">
-          <Link href="/">Logo</Link>
+          <Link href="/">
+            <Image
+              className=" "
+              height={64}
+              width={64}
+              alt="logo"
+              src="/img/logo.png"
+            />
+          </Link>
         </h1>
       </div>
       <nav>

@@ -8,6 +8,8 @@ import {
 } from "@/redux/api/lostItemApi";
 import Image from "next/image";
 import Link from "next/link";
+import Loading from "@/components/UI/StyleComponent/Loading";
+import Error from "@/components/UI/StyleComponent/Error";
 
 export default function AllLostItem() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,17 +34,17 @@ export default function AllLostItem() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
+      <>
+        <Loading />
+      </>
     );
   }
 
   if (error) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        Error loading All lost items.
-      </div>
+      <>
+        <Error />
+      </>
     );
   }
 
@@ -82,21 +84,27 @@ export default function AllLostItem() {
           onClick={() => {
             setPage(1);
           }}
-          className="bg-blue-500 text-white p-2 rounded-md"
+          className="bg-black text-white p-2 rounded-md"
         >
           Apply Filters
         </button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {lostItemsData?.map((item: any) => (
-          <div key={item.id} className="bg-white shadow-md rounded-lg p-6">
-            {/* <Image
+          <div
+            key={item.id}
+            className={`shadow-md rounded-lg p-6 ${
+              item.isFound ? "bg-pink-200" : "bg-green-200"
+            }`}
+          >
+            <Image
               width={400}
               height={400}
               src={item.images[0]}
-              alt={item.lostItemName}
+              alt={item.images[0]}
               className="w-full h-40 object-cover rounded-md mb-4"
-            /> */}
+            />
+
             <h2 className="text-xl font-semibold mb-2">{item.lostItemName}</h2>
             <p className="text-gray-700 mb-2">
               <strong>Description:</strong> {item.description}

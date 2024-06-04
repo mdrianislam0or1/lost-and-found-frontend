@@ -8,11 +8,7 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
       roleMenu.push(
         {
           title: "Dashboard",
-          path: `${role}`,
-        },
-        {
-          title: "Manage User",
-          path: `${role}/manage-users`,
+          path: `/${role}`,
         },
         {
           title: "Create FoundItem Category",
@@ -26,10 +22,7 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           title: "Get Category",
           path: `${role}/getAllCategory`,
         },
-        {
-          title: "Manage Active User",
-          path: `${role}/manage-users`,
-        },
+
         {
           title: "Submit Found-Item",
           path: `${role}/foundItem`,
@@ -47,13 +40,13 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
 
     case USER_ROLE.USER:
       roleMenu.push(
-        {
-          title: "Dashboard",
-          path: `${role}`,
-        },
+        // {
+        //   title: "Dashboard",
+        //   path: `/${role}`,
+        // },
         {
           title: "Manage Profile",
-          path: `${role}/manage-profile`,
+          path: `${role}/manageProfile`,
         }
       );
       break;

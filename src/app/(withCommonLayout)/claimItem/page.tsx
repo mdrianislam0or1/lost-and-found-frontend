@@ -5,6 +5,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useSubmitClaimMutation } from "@/redux/api/claimApi";
 import { useGetAllFoundItemQuery } from "@/redux/api/foundItemApi";
+import Loading from "@/components/UI/StyleComponent/Loading";
+import Error from "@/components/UI/StyleComponent/Error";
 
 export default function ClaimItem() {
   const { data, error, isLoading } = useGetAllFoundItemQuery({});
@@ -57,20 +59,28 @@ export default function ClaimItem() {
     const uploadedPhotos = await handleImageUpload();
     const finalClaimData = { ...claimData, photos: uploadedPhotos };
     submitClaim(finalClaimData).then((response) => {
-      if (response.data.success) {
+      if (response?.data?.success) {
         alert("Claim created successfully");
       } else {
-        alert("Failed to create claim");
+        // alert("Failed to create claim");
       }
     });
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <>
+        <Loading />
+      </>
+    );
   }
 
   if (error) {
-    return <div>Error loading found items</div>;
+    return (
+      <>
+        <Error />
+      </>
+    );
   }
 
   const foundItems = data?.data;
@@ -268,7 +278,7 @@ export default function ClaimItem() {
           <button
             type="submit"
             disabled={uploading}
-            className="mt-2 w-full bg-blue-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="mt-2 w-full bg-black text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             {uploading ? "Uploading..." : "Submit Claim"}
           </button>

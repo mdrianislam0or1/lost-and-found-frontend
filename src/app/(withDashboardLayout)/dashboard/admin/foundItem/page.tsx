@@ -1,5 +1,7 @@
 "use client";
 
+import Error from "@/components/UI/StyleComponent/Error";
+import Loading from "@/components/UI/StyleComponent/Loading";
 import {
   useSubmitFoundItemMutation,
   useGetFoundItemCategoriesQuery,
@@ -10,6 +12,7 @@ import { uploadImage } from "@/utils/uploadImages";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { any } from "zod";
 
 type FormValues = {
   categoryId: string;
@@ -70,11 +73,19 @@ export default function SubmitFoundItem() {
   } = useGetAllFoundItemQuery({});
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error loading found items</div>;
+    return (
+      <div>
+        <Error />
+      </div>
+    );
   }
 
   const foundItems = data?.data || [];
@@ -84,7 +95,7 @@ export default function SubmitFoundItem() {
     try {
       const result = await deleteFountItem(id).unwrap();
       if (result?.error) {
-        throw new Error(result.error);
+        console.log(result.error);
       }
       console.log("Delete result:", result);
       alert("Item deleted successfully!");
@@ -98,7 +109,7 @@ export default function SubmitFoundItem() {
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4 text-center">Submit Found Item</h2>
       <div className="text-center mt-6">
-        <Link href="/dashboard/admin/foundItem/allFoundItem">
+        <Link href="/foundItem">
           <button className="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg shadow hover:bg-indigo-700 transition duration-300">
             Found-Item
           </button>
@@ -196,7 +207,7 @@ export default function SubmitFoundItem() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4"
+            className="w-full bg-black text-white font-bold py-2 px-4 rounded mt-4"
             disabled={isLoading}
           >
             {isLoading ? "Submitting..." : "Submit Found Item"}
@@ -247,7 +258,7 @@ export default function SubmitFoundItem() {
                       <Link
                         href={`/dashboard/admin/foundItem/update/${item.id}`}
                       >
-                        <button className="text-blue-600 hover:underline mr-2">
+                        <button className="text-blue600 hover:underline mr-2">
                           Update
                         </button>
                       </Link>

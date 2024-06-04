@@ -6,6 +6,7 @@ import {
   useGetFoundItemCategoriesQuery,
 } from "@/redux/api/foundItemApi";
 import { usesDebounced } from "@/redux/hooks";
+import Loading from "@/components/UI/StyleComponent/Loading";
 
 const SearchOrFilters: React.FC = () => {
   const [categoryId, setCategoryId] = useState<string>("");
@@ -65,13 +66,17 @@ const SearchOrFilters: React.FC = () => {
           />
           <button
             onClick={handleSearch}
-            className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="p-2 bg-black text-white rounded hover:bg-blue600"
           >
             Search
           </button>
         </div>
       </div>
-      {isLoading && <p>Loading...</p>}
+      {isLoading && (
+        <>
+          <Loading />
+        </>
+      )}
       {/* {error && <p className="text-red-500">Error: {error.message}</p>} */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {data?.data?.map((item: any) => (

@@ -1,3 +1,5 @@
+import { authKey } from "@/constants/authKey";
+import { deleteCookies } from "@/services/actions/deleteCookies";
 import { getUserInfo, removeUser } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 
@@ -7,7 +9,9 @@ const AuthButton = () => {
 
   const handleLogout = () => {
     removeUser();
+    deleteCookies(authKey);
     router.refresh();
+    router.push("/");
   };
   return (
     <>

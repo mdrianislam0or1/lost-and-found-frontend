@@ -7,6 +7,8 @@ import {
 } from "@/redux/api/profileApi";
 import "tailwindcss/tailwind.css";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Loading from "@/components/UI/StyleComponent/Loading";
 
 interface ProfileData {
   name: string;
@@ -21,6 +23,8 @@ interface ProfileData {
 export default function EditProfile() {
   const { data: profileData, isLoading } = useGetMyProfileQuery({});
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -78,16 +82,22 @@ export default function EditProfile() {
         profilePicture: profilePictureUrl,
       }).unwrap();
       alert("Profile updated successfully!");
+      router.refresh();
     } catch (error: any) {
       console.error("Failed to update profile:", error);
       alert(`Failed to update profile: ${error.message}`);
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
 
   return (
-    <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="container my-10 mx-auto p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
         Edit Profile
       </h2>

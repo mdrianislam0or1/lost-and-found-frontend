@@ -41,7 +41,7 @@ export default function ChangePassword() {
   };
 
   return (
-    <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg max-w-md">
+    <div className="container mx-auto my-20 p-6 bg-white rounded-lg shadow-lg max-w-md">
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
         Change Password
       </h2>

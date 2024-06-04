@@ -38,7 +38,7 @@ export default function CreateCategory() {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4"
+          className="w-full bg-black text-white font-bold py-2 px-4 rounded mt-4"
           disabled={isLoading}
         >
           {isLoading ? "Submitting..." : "Create Category"}

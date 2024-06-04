@@ -2,15 +2,16 @@
 import { useGetRecentLostItemQuery } from "@/redux/api/lostItemApi";
 import Image from "next/image";
 import Link from "next/link";
+import Loading from "../StyleComponent/Loading";
 
 export default function RecentLostItem() {
   const { data, error, isLoading } = useGetRecentLostItemQuery({});
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
+      <>
+        <Loading />
+      </>
     );
   }
 
@@ -29,14 +30,22 @@ export default function RecentLostItem() {
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {data?.map((item: any) => (
-          <div key={item.id} className="bg-white shadow-md rounded-lg p-6">
-            {/* <Image
+          <div
+            key={item.id}
+            className={`shadow-md rounded-lg p-6 ${
+              item.isFound ? "bg-pink-100" : "bg-green-100"
+            }`}
+          >
+            <Image
               width={400}
               height={400}
               src={item.images[0]}
-              alt={item.lostItemName}
+              alt={item.images[0]}
               className="w-full h-40 object-cover rounded-md mb-4"
-            /> */}
+            />
+            <small className="bg-black">
+              <button>{item.isFound}</button>
+            </small>
             <h2 className="text-xl font-semibold mb-2">{item.lostItemName}</h2>
             <p className="text-gray-700 mb-2">
               <strong>Description:</strong> {item.description}

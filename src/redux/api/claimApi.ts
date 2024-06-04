@@ -27,6 +27,31 @@ const claimApi = baseApi.injectEndpoints({
       }),
       providesTags: [tagTypes.allClaim],
     }),
+    getWebsiteMetrics: build.query({
+      query: () => ({
+        url: "/website-metrics",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.allClaim],
+    }),
+
+    getAllUser: build.query({
+      query: () => ({
+        url: "/users",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.allClaim, tagTypes.foundData, tagTypes.lostData],
+    }),
+
+    updateUserStatus: build.mutation({
+      query: ({ id, status }) => ({
+        url: `/users/${id}/status`,
+        method: "PUT",
+        contentType: "application/json",
+        data: { status },
+      }),
+      invalidatesTags: [tagTypes.allClaim],
+    }),
 
     updateClaimStatus: build.mutation({
       query: ({ id, status }) => ({
@@ -54,4 +79,7 @@ export const {
   useGetMyClaimQuery,
   useUpdateClaimStatusMutation,
   useDeleteClaimItemMutation,
+  useGetWebsiteMetricsQuery,
+  useGetAllUserQuery,
+  useUpdateUserStatusMutation,
 } = claimApi;

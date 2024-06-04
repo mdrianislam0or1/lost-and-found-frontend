@@ -1,4 +1,6 @@
 "use client";
+import Error from "@/components/UI/StyleComponent/Error";
+import Loading from "@/components/UI/StyleComponent/Loading";
 import { useGetMyProfileQuery } from "@/redux/api/profileApi";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,11 +9,19 @@ export default function Profile() {
   const { data, error, isLoading } = useGetMyProfileQuery({});
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error loading profile data</div>;
+    return (
+      <div>
+        <Error />
+      </div>
+    );
   }
 
   const profile = data;
@@ -23,7 +33,7 @@ export default function Profile() {
           <Image
             width={40}
             height={40}
-            src={profile?.profile?.profilePicture || "/default-avatar.png"}
+            src={profile?.profile?.profilePicture || ""}
             alt="Profile Picture"
             className="h-24 w-24 rounded-full object-cover border-2 border-gray-300"
           />

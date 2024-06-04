@@ -1,5 +1,7 @@
 "use client";
 
+import Error from "@/components/UI/StyleComponent/Error";
+import Loading from "@/components/UI/StyleComponent/Loading";
 import { useGetAllFoundItemQuery } from "@/redux/api/foundItemApi";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,11 +11,20 @@ export default function FoundItem() {
   const { data, error, isLoading } = useGetAllFoundItemQuery({});
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        {" "}
+        <Loading />
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error loading found items</div>;
+    return (
+      <div>
+        <Error />
+      </div>
+    );
   }
 
   const foundItems = data?.data;

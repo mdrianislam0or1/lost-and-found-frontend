@@ -86,6 +86,22 @@ const lostItemApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.lostData],
     }),
+
+    isFoundUpdate: build.mutation({
+      query: ({ id, isFound }) => ({
+        url: `/lostItem/is-found/${id}`,
+        method: "PATCH",
+        contentType: "application/json",
+        data: { isFound },
+      }),
+      invalidatesTags: [tagTypes.lostData],
+      transformResponse: (response, meta) => {
+        if (!response) {
+          return { error: "Failed to update item status" };
+        }
+        return { data: response };
+      },
+    }),
   }),
 });
 
@@ -100,4 +116,5 @@ export const {
   useUpdateLostItemMutation,
   useGetLostItemByIdQuery,
   useDeleteLostItemMutation,
+  useIsFoundUpdateMutation,
 } = lostItemApi;

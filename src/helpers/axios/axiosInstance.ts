@@ -1,4 +1,5 @@
 import { authKey } from "@/constants/authKey";
+import setAccessToken from "@/services/actions/setAccessToken";
 import { IGenericErrorMessage, ResponseSuccessType } from "@/types";
 import { getFromLocalStorage } from "@/utils/localStorage";
 import axios from "axios";
@@ -16,6 +17,7 @@ instance.interceptors.request.use(
     if (accessToken) {
       config.headers.Authorization = accessToken;
     }
+    // setAccessToken(authKey);
     return config;
   },
   function (error) {

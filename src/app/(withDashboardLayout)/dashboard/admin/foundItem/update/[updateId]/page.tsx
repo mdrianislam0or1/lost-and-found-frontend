@@ -6,6 +6,7 @@ import {
   useUpdateFoundItemMutation,
 } from "@/redux/api/foundItemApi";
 import "tailwindcss/tailwind.css";
+import Loading from "@/components/UI/StyleComponent/Loading";
 
 type TParams = {
   params: {
@@ -86,7 +87,13 @@ export default function UpdateFoundItem({ params }: TParams) {
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div>
+        {" "}
+        <Loading />
+      </div>
+    );
 
   return (
     <div className="container mx-auto p-4">

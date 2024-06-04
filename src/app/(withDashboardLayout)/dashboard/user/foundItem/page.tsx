@@ -134,12 +134,12 @@ export default function SubmitFoundItem() {
             <input
               {...register("images")}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
+              placeholder=""
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4"
+            className="w-full bg-black text-white font-bold py-2 px-4 rounded mt-4"
             disabled={isLoading}
           >
             {isLoading ? "Submitting..." : "Submit Found Item"}

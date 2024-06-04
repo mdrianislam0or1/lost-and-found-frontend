@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import axios from "axios";
 import {
   useGetLostItemByIdQuery,
   useGetLostItemCategoriesQuery,
   useUpdateLostItemMutation,
 } from "@/redux/api/lostItemApi";
+import Loading from "@/components/UI/StyleComponent/Loading";
 
 type TParams = {
   params: {
@@ -32,6 +34,9 @@ export default function UpdateLostItem({ params }: TParams) {
     },
     images: [] as string[],
   });
+
+  const [files, setFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (lostItemData) {
@@ -69,12 +74,45 @@ export default function UpdateLostItem({ params }: TParams) {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFiles(Array.from(e.target.files));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUploading(true);
+    const imageUrls = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const formDataForImage = new FormData();
+      formDataForImage.append("image", file);
+
+      try {
+        const response = await axios.post(
+          `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API}`,
+          formDataForImage
+        );
+        imageUrls.push(response.data.data.url);
+      } catch (err) {
+        console.error("Failed to upload image:", err);
+        alert("Failed to upload image.");
+        setUploading(false);
+        return;
+      }
+    }
+
+    const formattedData = {
+      ...formData,
+      images: imageUrls,
+    };
+
     try {
       const response = await updateLostItem({
         id: params.lostId,
-        data: formData,
+        data: formattedData,
       }).unwrap();
       if (response && response.count > 0) {
         alert("Lost item updated successfully!");
@@ -84,10 +122,17 @@ export default function UpdateLostItem({ params }: TParams) {
     } catch (error) {
       console.error("Failed to update lost item:", error);
       alert("Failed to update lost item. Please try again.");
+    } finally {
+      setUploading(false);
     }
   };
 
-  if (isLoadingLostItem || isLoadingCategories) return <div>Loading...</div>;
+  if (isLoadingLostItem || isLoadingCategories)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
 
   return (
     <div className="container mx-auto p-4">
@@ -180,12 +225,10 @@ export default function UpdateLostItem({ params }: TParams) {
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Images:
-            <textarea
-              name="images"
-              value={formData.images.join(", ")}
-              onChange={(e) =>
-                setFormData({ ...formData, images: e.target.value.split(", ") })
-              }
+            <input
+              type="file"
+              multiple
+              onChange={handleFileChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
           </label>
@@ -193,9 +236,9 @@ export default function UpdateLostItem({ params }: TParams) {
         <button
           type="submit"
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          disabled={isUpdating}
+          disabled={isUpdating || uploading}
         >
-          {isUpdating ? "Updating..." : "Update Lost Item"}
+          {isUpdating || uploading ? "Updating..." : "Update Lost Item"}
         </button>
       </form>
     </div>

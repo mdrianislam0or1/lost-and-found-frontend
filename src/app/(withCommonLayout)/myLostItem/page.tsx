@@ -1,5 +1,7 @@
 "use client";
 
+import Error from "@/components/UI/StyleComponent/Error";
+import Loading from "@/components/UI/StyleComponent/Loading";
 import { useGetLostItemQuery } from "@/redux/api/lostItemApi";
 import Image from "next/image";
 import React from "react";
@@ -8,11 +10,19 @@ export default function MyLostItem() {
   const { data, error, isLoading } = useGetLostItemQuery({});
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error loading lost items</div>;
+    return (
+      <div>
+        <Error />
+      </div>
+    );
   }
 
   const lostItems = data;

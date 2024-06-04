@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 "use client";
+import Loading from "@/components/UI/StyleComponent/Loading";
 import {
   useDeleteClaimItemMutation,
   useGetAllClaimQuery,
@@ -26,7 +27,13 @@ export default function GetAllClaim() {
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading)
+    return (
+      <>
+        {" "}
+        <Loading />
+      </>
+    );
   if (error) return <p>An error occurred</p>;
 
   const handleDelete = async (id: string) => {
@@ -46,6 +53,8 @@ export default function GetAllClaim() {
       alert("Failed to delete item.");
     }
   };
+
+  console.log("all claim", data);
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">All Claims</h1>
@@ -59,7 +68,7 @@ export default function GetAllClaim() {
 
                 "Status",
                 "Distinguishing Features",
-                // "Lost Date",
+                "FoundItem Name",
                 "Proof of Purchase",
                 "Photos",
                 "Ownership Docs",
@@ -90,6 +99,9 @@ export default function GetAllClaim() {
                 <td className="py-3 px-4 border">{claim.status}</td>
                 <td className="py-3 px-4 border">
                   {claim.distinguishingFeatures}
+                </td>
+                <td className="py-3 px-4 border font-bold">
+                  {claim?.foundItem?.foundItemName}
                 </td>
                 {/* <td className="py-3 px-4 border">
                   {new Date(claim.lostDate).toLocaleDateString()}
