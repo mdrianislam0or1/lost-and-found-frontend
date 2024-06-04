@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useChangePasswordMutation } from "@/redux/api/profileApi";
 import { useRouter } from "next/navigation";
 import { removeUser } from "@/services/auth.service";
+import { deleteCookies } from "@/services/actions/deleteCookies";
+import { authKey } from "@/constants/authKey";
 
 export default function ChangePassword() {
   const [changePassword, { isLoading }] = useChangePasswordMutation();
@@ -21,6 +23,13 @@ export default function ChangePassword() {
     }));
   };
 
+  // const handleLogout = () => {
+  //   removeUser();
+  //   deleteCookies(authKey);
+  //   router.refresh();
+  //   router.push("/");
+  // };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -31,7 +40,12 @@ export default function ChangePassword() {
 
     try {
       await changePassword(formData).unwrap();
+      // removeUser();
+      // router.push("/");
+
       removeUser();
+      deleteCookies(authKey);
+      router.refresh();
       router.push("/");
       alert("Password changed successfully!");
     } catch (error: any) {

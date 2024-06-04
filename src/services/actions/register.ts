@@ -14,14 +14,17 @@ export const register = async (formData: RegisterForm) => {
     },
   };
 
-  const res = await fetch(`http://localhost:5000/api/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(preparedData),
-    cache: "no-store",
-  });
+  const res = await fetch(
+    `https://lost-and-found-backend-tau.vercel.app/api/register`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(preparedData),
+      cache: "no-store",
+    }
+  );
 
   const info = await res.json();
   return info;

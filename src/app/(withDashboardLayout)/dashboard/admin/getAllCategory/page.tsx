@@ -20,24 +20,15 @@ export default function GetAllCategories() {
 
   if (lostLoading || foundLoading) {
     return (
-      <div>
-        {" "}
+      <div className="flex justify-center items-center h-screen">
         <Loading />
       </div>
     );
   }
 
-  if (lostError) {
+  if (lostError || foundError) {
     return (
-      <div>
-        <Error />
-      </div>
-    );
-  }
-
-  if (foundError) {
-    return (
-      <div>
+      <div className="flex justify-center items-center h-screen">
         <Error />
       </div>
     );
@@ -46,50 +37,45 @@ export default function GetAllCategories() {
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">All Found Item Categories</h2>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {foundData?.length ? (
-          <ul className="space-y-2">
-            {foundData?.map((category: any) => (
-              <li key={category.id} className="border p-2 rounded">
-                <p className="font-bold">{category.id}</p>
-                <p className="font-bold">{category.name}</p>
-                <p className="text-sm text-gray-500">
-                  Created At: {new Date(category.createdAt).toLocaleString()}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Updated At: {new Date(category.updatedAt).toLocaleString()}
-                </p>
-              </li>
-            ))}
-          </ul>
+          foundData.map((category: any) => (
+            <div key={category.id} className="border p-4 rounded shadow-md">
+              <p className="font-bold">{category.id}</p>
+              <p className="font-bold">{category.name}</p>
+              <p className="text-sm text-gray-500">
+                Created At: {new Date(category.createdAt).toLocaleString()}
+              </p>
+              <p className="text-sm text-gray-500">
+                Updated At: {new Date(category.updatedAt).toLocaleString()}
+              </p>
+            </div>
+          ))
         ) : (
-          <p>No found item categories found</p>
+          <p className="col-span-full text-center">
+            No found item categories found
+          </p>
         )}
       </div>
 
       <h2 className="text-2xl font-bold mb-4 mt-8">All Lost Item Categories</h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {lostData?.length ? (
-          <div className="space-y-2">
-            {lostData?.map((category: any) => (
-              <div key={category.id} className="border p-2 rounded">
-                <p className="font-bold">{category.id}</p>
-
-                <p className="font-bold">{category.name}</p>
-                <p className="text-sm text-gray-500">
-                  Created At: {new Date(category.createdAt).toLocaleString()}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Updated At: {new Date(category.updatedAt).toLocaleString()}
-                </p>
-              </div>
-            ))}
-          </div>
+          lostData.map((category: any) => (
+            <div key={category.id} className="border p-4 rounded shadow-md">
+              <p className="font-bold">{category.id}</p>
+              <p className="font-bold">{category.name}</p>
+              <p className="text-sm text-gray-500">
+                Created At: {new Date(category.createdAt).toLocaleString()}
+              </p>
+              <p className="text-sm text-gray-500">
+                Updated At: {new Date(category.updatedAt).toLocaleString()}
+              </p>
+            </div>
+          ))
         ) : (
-          <p className="text-center">
+          <p className="col-span-full text-center">
             No lost item categories found
-            <Error />
           </p>
         )}
       </div>

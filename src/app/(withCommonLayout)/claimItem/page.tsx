@@ -45,7 +45,7 @@ export default function ClaimItem() {
       const formData = new FormData();
       formData.append("image", file);
       const response = await axios.post(
-        `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API}`,
+        `https://api.imgbb.com/1/upload?key=468a47d5f64ecfb9b135bba4c38d559d`,
         formData
       );
       uploadedPhotos.push(response.data.data.url);

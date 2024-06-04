@@ -11,6 +11,10 @@ const protectedRoutes = [
   "/claimItem",
   "/profile",
   "/search",
+  "/submitLostItem",
+  "/submitFoundItem",
+  "/foundItem",
+  "/changePassword",
 ];
 const roleBasedPrivateRoutes = {
   admin: [/^\/dashboard\/admin/],
@@ -69,5 +73,9 @@ export const config = {
     "/claimItem",
     "/profile",
     "/search",
+    "/submitLostItem",
+    "/submitFoundItem",
+    "/foundItem",
+    "/changePassword",
   ],
 };

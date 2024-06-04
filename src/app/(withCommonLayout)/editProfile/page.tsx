@@ -5,26 +5,12 @@ import {
   useGetMyProfileQuery,
   useUpdateProfileMutation,
 } from "@/redux/api/profileApi";
-import "tailwindcss/tailwind.css";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import Loading from "@/components/UI/StyleComponent/Loading";
-
-interface ProfileData {
-  name: string;
-  email: string;
-  profile: {
-    bio: string;
-    age: string;
-    profilePicture: string;
-  };
-}
 
 export default function EditProfile() {
   const { data: profileData, isLoading } = useGetMyProfileQuery({});
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
-
-  const router = useRouter();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -33,8 +19,6 @@ export default function EditProfile() {
     age: "",
     profilePicture: "",
   });
-
-  const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (profileData) {
@@ -48,9 +32,7 @@ export default function EditProfile() {
     }
   }, [profileData]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<any>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -58,43 +40,25 @@ export default function EditProfile() {
     }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setImageFile(e.target.files?.[0] || null);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    let profilePictureUrl = formData.profilePicture;
-    if (imageFile) {
-      try {
-        profilePictureUrl = await uploadImage(imageFile);
-      } catch (error: any) {
-        console.error("Failed to upload image:", error);
-        alert(`Failed to upload image: ${error.message}`);
-        return;
-      }
-    }
-
     try {
-      await updateProfile({
-        ...formData,
-        profilePicture: profilePictureUrl,
-      }).unwrap();
+      await updateProfile(formData).unwrap();
       alert("Profile updated successfully!");
-      router.refresh();
     } catch (error: any) {
-      console.error("Failed to update profile:", error);
-      alert(`Failed to update profile: ${error.message}`);
+      //   console.error("Failed to update profile:", error);
+      //   alert(`Failed to update profile: ${error.message}`);
     }
   };
 
-  if (isLoading)
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
+  //   if (isLoading) {
+  //     return (
+  //       <div>
+  //         <Loading />
+  //       </div>
+  //     );
+  //   }
 
   return (
     <div className="container my-10 mx-auto p-6 bg-white rounded-lg shadow-lg">
@@ -163,11 +127,11 @@ export default function EditProfile() {
           <label className="block text-sm font-medium text-gray-700">
             Profile Picture:
             <input
-              type="file"
+              type="text"
               name="profilePicture"
-              onChange={handleImageChange}
-              className="mt-1 block w-full text-sm text-gray-500"
-              accept="image/*"
+              value={formData.profilePicture}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
             />
           </label>
         </div>
@@ -182,24 +146,3 @@ export default function EditProfile() {
     </div>
   );
 }
-
-const uploadImage = async (imageFile: File): Promise<string> => {
-  const formData = new FormData();
-  formData.append("image", imageFile);
-
-  const response = await fetch(
-    `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API}`,
-    {
-      method: "POST",
-      body: formData,
-    }
-  );
-
-  if (!response.ok) {
-    const errorResponse = await response.json();
-    throw new Error(errorResponse.error.message || "Failed to upload image");
-  }
-
-  const data = await response.json();
-  return data.data.url;
-};

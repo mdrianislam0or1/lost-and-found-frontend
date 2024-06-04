@@ -4,7 +4,6 @@ import { userLogin } from "@/services/actions/userLogin";
 import { storeUserInfo } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-/* eslint-disable react/no-unescaped-entities */
 import { SubmitHandler, useForm } from "react-hook-form";
 
 export type FormValues = {
@@ -100,7 +99,7 @@ const LoginPage = () => {
               </button>
             </div>
             <div className="text-sm text-center">
-              Don't have an account?{" "}
+              Donot have an account?{" "}
               <a
                 href="/register"
                 className="font-medium text-indigo-600 hover:text-indigo-500"

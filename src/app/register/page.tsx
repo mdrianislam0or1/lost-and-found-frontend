@@ -101,7 +101,7 @@ const RegisterPage: React.FC = () => {
       <div className="min-h-screen my-2 flex items-center justify-center">
         <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
           <h2 className="text-2xl font-bold text-center mb-8">
-            Registration with Blood Donation Company Name
+            Registration For The-Missing-Place
           </h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
