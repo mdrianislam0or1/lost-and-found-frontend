@@ -2,6 +2,7 @@
 import Navbar from "@/components/Shared/Navbar/Navbar";
 import { userLogin } from "@/services/actions/userLogin";
 import { storeUserInfo } from "@/services/auth.service";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -100,12 +101,12 @@ const LoginPage = () => {
             </div>
             <div className="text-sm text-center">
               Donot have an account?{" "}
-              <a
+              <Link
                 href="/register"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
                 Sign up
-              </a>
+              </Link>
             </div>
           </form>
         </div>

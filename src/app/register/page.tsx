@@ -3,6 +3,7 @@ import Navbar from "@/components/Shared/Navbar/Navbar";
 import { register } from "@/services/actions/register";
 import { userLogin } from "@/services/actions/userLogin";
 import { storeUserInfo } from "@/services/auth.service";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -212,9 +213,9 @@ const RegisterPage: React.FC = () => {
           </form>
           <p className="text-center text-gray-600">
             Already have an account?{" "}
-            <a href="/login" className="text-indigo-600">
+            <Link href="/login" className="text-indigo-600">
               Sign in
-            </a>
+            </Link>
           </p>
         </div>
       </div>
